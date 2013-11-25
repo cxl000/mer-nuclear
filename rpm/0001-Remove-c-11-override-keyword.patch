@@ -1,0 +1,255 @@
+diff -ru nuclear/src/animationcurve.h b/src/animationcurve.h
+--- nuclear/src/animationcurve.h	2013-11-25 03:20:51.094319304 +0000
++++ b/src/animationcurve.h	2013-11-25 03:36:00.802830307 +0000
+@@ -68,14 +68,14 @@
+ 
+ class InQuadCurve : public AnimationCurve {
+ public:
+-    virtual float value(float f) override {
++    virtual float value(float f) {
+         return f * f;
+     }
+ };
+ 
+ class InOutQuadCurve : public AnimationCurve {
+ public:
+-    virtual float value(float f) override {
++    virtual float value(float f) {
+         f *= 2.f;
+         if (f < 1.f) {
+             return f * f/ 2.f;
+@@ -98,7 +98,7 @@
+ 
+ class OutBackCurve : public BackCurve {
+ public:
+-    virtual float value(float t) override {
++    virtual float value(float t) {
+         float s = m_overshoot;
+         t -= 1.f;
+         return t*t*((s+1)*t+ s) + 1;
+@@ -108,7 +108,7 @@
+ 
+ class InOutBackCurve : public BackCurve {
+ public:
+-    virtual float value(float t) override {
++    virtual float value(float t) {
+         float s = m_overshoot;
+         t *= 2.0;
+         if (t < 1) {
+@@ -124,7 +124,7 @@
+ 
+ class OutBounceCurve : public AnimationCurve {
+ public:
+-    virtual float value(float t) override {
++    virtual float value(float t) {
+         float c = 1.f;
+         float a = 0.5f;
+         if (t < (4/11.0)) {
+@@ -155,7 +155,7 @@
+ 
+ class OutElasticCurve : public ElasticCurve {
+ public:
+-    virtual float value(float t) override {
++    virtual float value(float t) {
+         if (t == 0.f) return 0.f;
+         if (t == 1.f) return 1.f;
+ 
+@@ -179,7 +179,7 @@
+     PulseCurve() { m_pulseNormalize = 1.f; m_pulseNormalize = 1.f / pulse(1); }
+ 
+     // viscous fluid with a pulse for part and decay for the rest
+-    virtual float value(float x) override {
++    virtual float value(float x) {
+         if (x >= 1) return 1;
+         if (x <= 0) return 0;
+ 
+diff -ru nuclear/src/desktop-shell.cpp b/src/desktop-shell.cpp
+--- nuclear/src/desktop-shell.cpp	2013-11-25 03:20:51.098319329 +0000
++++ b/src/desktop-shell.cpp	2013-11-25 03:38:55.199695085 +0000
+@@ -82,7 +82,7 @@
+ }
+ 
+ struct BusyGrab : public ShellGrab {
+-    void focus() override
++    void focus()
+     {
+         wl_fixed_t sx, sy;
+         weston_surface *es = weston_compositor_pick_surface(pointer()->seat->compositor, pointer()->x, pointer()->y, &sx, &sy);
+@@ -91,7 +91,7 @@
+             delete this;
+         }
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         weston_seat *seat = pointer()->seat;
+ 
+@@ -262,9 +262,9 @@
+ public:
+     Panel *panel;
+ 
+-    void focus() override {}
+-    void motion(uint32_t time) override;
+-    void button(uint32_t time, uint32_t button, uint32_t state) override;
++    void focus() {}
++    void motion(uint32_t time);
++    void button(uint32_t time, uint32_t button, uint32_t state);
+ };
+ 
+ class Panel {
+@@ -432,7 +432,7 @@
+     bool inside;
+     uint32_t creationTime;
+ 
+-    void focus() override
++    void focus()
+     {
+         wl_fixed_t sx, sy;
+         weston_surface *es = weston_compositor_pick_surface(pointer()->seat->compositor, pointer()->x, pointer()->y, &sx, &sy);
+@@ -441,7 +441,7 @@
+         if (inside)
+             weston_pointer_set_focus(pointer(), surface, sx, sy);
+     }
+-    void motion(uint32_t time) override
++    void motion(uint32_t time)
+     {
+         wl_resource *resource;
+         wl_resource_for_each(resource, &pointer()->focus_resource_list) {
+@@ -450,7 +450,7 @@
+             wl_pointer_send_motion(resource, time, sx, sy);
+         }
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         wl_resource *resource;
+         wl_resource_for_each(resource, &pointer()->focus_resource_list) {
+@@ -602,7 +602,7 @@
+ 
+ class ClientGrab : public ShellGrab {
+ public:
+-    void focus() override
++    void focus()
+     {
+         wl_fixed_t sx, sy;
+         weston_surface *surface = weston_compositor_pick_surface(pointer()->seat->compositor, pointer()->x, pointer()->y, &sx, &sy);
+@@ -611,7 +611,7 @@
+             desktop_shell_grab_send_focus(resource, surface->resource, sx, sy);
+         }
+     }
+-    void motion(uint32_t time) override
++    void motion(uint32_t time)
+     {
+         wl_fixed_t sx = pointer()->x;
+         wl_fixed_t sy = pointer()->y;
+@@ -621,7 +621,7 @@
+ 
+         desktop_shell_grab_send_motion(resource, time, sx, sy);
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         // Send the event to the application as normal if the mouse was pressed initially.
+         // The application has to know the button was released, otherwise its internal state
+diff -ru nuclear/src/desktop-shell.h b/src/desktop-shell.h
+--- nuclear/src/desktop-shell.h	2013-11-25 03:20:51.098319329 +0000
++++ b/src/desktop-shell.h	2013-11-25 03:38:31.831579208 +0000
+@@ -32,9 +32,9 @@
+ protected:
+     virtual void init();
+     virtual void setGrabCursor(uint32_t);
+-    virtual void setBusyCursor(ShellSurface *shsurf, struct weston_seat *seat) override;
+-    virtual void endBusyCursor(struct weston_seat *seat) override;
+-    virtual void panelConfigure(weston_surface *es, int32_t sx, int32_t sy, int32_t width, int32_t height, Shell::PanelPosition pos) override;
++    virtual void setBusyCursor(ShellSurface *shsurf, struct weston_seat *seat);
++    virtual void endBusyCursor(struct weston_seat *seat);
++    virtual void panelConfigure(weston_surface *es, int32_t sx, int32_t sy, int32_t width, int32_t height, Shell::PanelPosition pos);
+ 
+ private:
+     void sendInitEvents();
+diff -ru nuclear/src/effects/griddesktops.cpp b/src/effects/griddesktops.cpp
+--- nuclear/src/effects/griddesktops.cpp	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/griddesktops.cpp	2013-11-25 03:39:36.911901929 +0000
+@@ -28,7 +28,7 @@
+ #include "wayland-desktop-shell-server-protocol.h"
+ 
+ struct DGrab : public ShellGrab {
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
+             int x = wl_fixed_to_int(pointer()->x);
+diff -ru nuclear/src/effects/minimizeeffect.h b/src/effects/minimizeeffect.h
+--- nuclear/src/effects/minimizeeffect.h	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/minimizeeffect.h	2013-11-25 03:36:33.042990180 +0000
+@@ -29,8 +29,8 @@
+     ~MinimizeEffect();
+ 
+ protected:
+-    virtual void addedSurface(ShellSurface *surf) override;
+-    virtual void removedSurface(ShellSurface *surf) override;
++    virtual void addedSurface(ShellSurface *surf);
++    virtual void removedSurface(ShellSurface *surf);
+ 
+ private:
+     struct Surface;
+diff -ru nuclear/src/effects/scaleeffect.cpp b/src/effects/scaleeffect.cpp
+--- nuclear/src/effects/scaleeffect.cpp	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/scaleeffect.cpp	2013-11-25 03:39:33.771886356 +0000
+@@ -47,7 +47,7 @@
+ };
+ 
+ struct Grab : public ShellGrab {
+-    void focus() override
++    void focus()
+     {
+         Workspace *currWs = shell()->currentWorkspace();
+ 
+@@ -76,7 +76,7 @@
+             tr->alphaAnim.run(tr->surface->output(), ALPHA_ANIM_DURATION);
+         }
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         if (state == WL_POINTER_BUTTON_STATE_PRESSED) {
+             ShellSurface *shsurf = Shell::getShellSurface(surface);
+diff -ru nuclear/src/shellsurface.cpp b/src/shellsurface.cpp
+--- nuclear/src/shellsurface.cpp	2013-11-25 03:20:51.098319329 +0000
++++ b/src/shellsurface.cpp	2013-11-25 03:38:41.695628134 +0000
+@@ -567,7 +567,7 @@
+ class MoveGrab : public ShellGrab
+ {
+ public:
+-    void motion(uint32_t time) override
++    void motion(uint32_t time)
+     {
+         int dx = wl_fixed_to_int(pointer()->x + this->dx);
+         int dy = wl_fixed_to_int(pointer()->y + this->dy);
+@@ -579,7 +579,7 @@
+         weston_surface_configure(es, dx, dy, es->geometry.width, es->geometry.height);
+         weston_compositor_schedule_repaint(es->compositor);
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state_w) override
++    void button(uint32_t time, uint32_t button, uint32_t state_w)
+     {
+         enum wl_pointer_button_state state = (wl_pointer_button_state)state_w;
+ 
+@@ -638,7 +638,7 @@
+ class ResizeGrab : public ShellGrab
+ {
+ public:
+-    void motion(uint32_t time) override
++    void motion(uint32_t time)
+     {
+         if (!shsurf)
+             return;
+@@ -666,7 +666,7 @@
+ 
+         shsurf->m_client->send_configure(shsurf->m_surface, edges, w, h);
+     }
+-    void button(uint32_t time, uint32_t button, uint32_t state) override
++    void button(uint32_t time, uint32_t button, uint32_t state)
+     {
+         if (pointer()->button_count == 0 && state == WL_POINTER_BUTTON_STATE_RELEASED) {
+             shsurf->m_runningGrab = nullptr;

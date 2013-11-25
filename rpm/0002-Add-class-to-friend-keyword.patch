@@ -1,0 +1,36 @@
+diff -ru nuclear/src/effects/griddesktops.h b/src/effects/griddesktops.h
+--- nuclear/src/effects/griddesktops.h	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/griddesktops.h	2013-11-25 03:42:53.264875599 +0000
+@@ -42,7 +42,7 @@
+     struct DGrab *m_grab;
+     int m_setWs;
+ 
+-    friend DGrab;
++    friend class DGrab;
+ };
+ 
+ #endif
+diff -ru nuclear/src/effects/inoutsurfaceeffect.h b/src/effects/inoutsurfaceeffect.h
+--- nuclear/src/effects/inoutsurfaceeffect.h	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/inoutsurfaceeffect.h	2013-11-25 03:42:48.228850635 +0000
+@@ -37,7 +37,7 @@
+ 
+     std::list<Surface *> m_surfaces;
+ 
+-    friend Surface;
++    friend class Surface;
+ };
+ 
+ #endif
+diff -ru nuclear/src/effects/scaleeffect.h b/src/effects/scaleeffect.h
+--- nuclear/src/effects/scaleeffect.h	2013-11-25 03:20:51.098319329 +0000
++++ b/src/effects/scaleeffect.h	2013-11-25 03:42:41.980819630 +0000
+@@ -47,7 +47,7 @@
+     struct Grab *m_grab;
+     ShellSurface *m_chosenSurface;
+ 
+-    friend Grab;
++    friend class Grab;
+ };
+ 
+ #endif
