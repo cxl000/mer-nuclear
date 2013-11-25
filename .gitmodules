@@ -1,0 +1,3 @@
+[submodule "nuclear"]
+	path = nuclear
+	url = https://github.com/nuclide/nuclear.git
