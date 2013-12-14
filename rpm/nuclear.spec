@@ -24,8 +24,8 @@ without many dependencies aside Weston and Qt.
 %prep
 %setup -q
 cd nuclear
-%patch0 -p1
-%patch1 -p1
+#%patch0 -p1
+#%patch1 -p1
 
 %build
 cd nuclear
@@ -42,10 +42,10 @@ rm -rf $RPM_BUILD_ROOT
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/nuclear
-%{_libdir}/nuclear/nuclear-shell.so
-%{_libdir}/nuclear/services/libloginservice.so
-%{_libdir}/nuclear/services/libmixerservice.so
-%{_libdir}/nuclear/services/libprocesslauncher.so
-%{_datadir}/nuclear/*/
+#%{_bindir}/nuclear
+%{_libdir}/nuclear-shell/nuclear-shell.so
+#%{_libdir}/nuclear/services/libloginservice.so
+#%{_libdir}/nuclear/services/libmixerservice.so
+#%{_libdir}/nuclear/services/libprocesslauncher.so
+%{_datadir}/nuclear-shell/nuclear-desktop-shell.xml
 
