@@ -21,6 +21,14 @@ with the interface in QtQuick 2.
 Its goal is to produce a light and self-contained shell running on Wayland,
 without many dependencies aside Weston and Qt.
 
+%package devel
+Summary:   Devel files for Nuclear a shell for Wayland's Weston
+Group:     Development/Liraries
+Requires:  %{name} = %{version}-%{release}
+
+%description devel
+Development files for a Weston shell plugin
+
 %prep
 %setup -q
 cd nuclear
@@ -47,5 +55,8 @@ rm -rf $RPM_BUILD_ROOT
 #%{_libdir}/nuclear/services/libloginservice.so
 #%{_libdir}/nuclear/services/libmixerservice.so
 #%{_libdir}/nuclear/services/libprocesslauncher.so
-%{_datadir}/nuclear-shell/nuclear-desktop-shell.xml
 
+%files devel
+%defattr(-,root,root,-)
+%{_libdir}/pkgconfig/nuclear.pc
+%{_datadir}/nuclear-shell/nuclear-desktop-shell.xml
