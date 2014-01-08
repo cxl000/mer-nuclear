@@ -60,7 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 #%{_bindir}/nuclear
-%{_libdir}/nuclear-shell/nuclear-shell.so
+%{_libdir}/nuclear-shell/libnuclear-shell-common.so
+%{_libdir}/nuclear-shell/nuclear-desktop-shell.so
 #%{_libdir}/nuclear/services/libloginservice.so
 #%{_libdir}/nuclear/services/libmixerservice.so
 #%{_libdir}/nuclear/services/libprocesslauncher.so
@@ -69,3 +70,6 @@ rm -rf $RPM_BUILD_ROOT
 %defattr(-,root,root,-)
 %{_libdir}/pkgconfig/nuclear.pc
 %{_datadir}/nuclear-shell/nuclear-desktop-shell.xml
+%{_datadir}/nuclear-shell/nuclear-settings.xml
+%{_datadir}/nuclear-shell/nuclear-dropdown.xml
+
