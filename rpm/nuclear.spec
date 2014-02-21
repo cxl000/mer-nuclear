@@ -37,16 +37,7 @@ cd nuclear
 
 %build
 cd nuclear
-%ifnarch %{ix86} x86_64
-# HACK!!! Please remove when possible.
-# cmake is accelerated but version is too old
-mkdir /tmp/bin
-cp -a /usr/bin/cmake /usr/share/cmake/Modules /usr/share/cmake/Templates /tmp/bin/
-PATH=/tmp/bin:$PATH
-/tmp/bin/cmake -DCMAKE_VERBOSE_MAKEFILE=ON -DCMAKE_INSTALL_PREFIX:PATH=/usr -DCMAKE_INSTALL_LIBDIR:PATH=/usr/lib -DINCLUDE_INSTALL_DIR:PATH=/usr/include -DLIB_INSTALL_DIR:PATH=/usr/lib -DSYSCONF_INSTALL_DIR:PATH=/etc -DSHARE_INSTALL_PREFIX:PATH=/usr/share -DCMAKE_SKIP_RPATH:BOOL=ON -DBUILD_SHARED_LIBS:BOOL=ON . -DCMAKE_BUILD_TYPE=RelWithDebInfo
-%else
 %cmake
-%endif
 make %{?jobs:-j%jobs}
 
 %install
